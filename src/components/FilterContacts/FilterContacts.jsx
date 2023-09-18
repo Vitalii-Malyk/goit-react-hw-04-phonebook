@@ -1,33 +1,33 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
+import { nanoid } from 'nanoid';
 
 import {
   WrapElementStyle,
   InputElementStyle,
 } from 'components/FilterContacts/FilterContacts.styled';
 
-class FilterContacts extends Component {
-  state = {
-    filter: '',
-  };
-  handleChange = ({ target: { value } }) => {
-    this.setState({ filter: value });
-    this.props.filterContacts(value);
+const FilterContacts = ({ filterContacts }) => {
+  const [filter, setFilter] = useState('');
+
+  const handleChange = ({ target: { value } }) => {
+    setFilter({ value });
+    return filterContacts(value);
   };
 
-  render() {
-    return (
-      <WrapElementStyle>
-        <label htmlFor={this.nameInputId}>Filter contacts:</label>
-        <InputElementStyle
-          onChange={this.handleChange}
-          id={this.nameInputId}
-          type="text"
-          name="name"
-          value={this.state.filter}
-        />
-      </WrapElementStyle>
-    );
-  }
-}
+  let nameInputId = nanoid();
+
+  return (
+    <WrapElementStyle>
+      <label htmlFor={nameInputId}>Filter contacts:</label>
+      <InputElementStyle
+        onChange={handleChange}
+        id={nameInputId}
+        type="text"
+        name="name"
+        value={filter}
+      />
+    </WrapElementStyle>
+  );
+};
 
 export default FilterContacts;

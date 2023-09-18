@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import { nanoid } from 'nanoid';
 
 import {
@@ -7,19 +6,19 @@ import {
   ButtonElementStyle,
 } from 'components/CreateListContact/CreateListContact.styled';
 
-class CreateListContact extends Component {
-  deleteId = Id => {
-    this.props.deleted(Id);
+const CreateListContact = ({ contact, deleted }) => {
+  const deleteId = Id => {
+    deleted(Id);
   };
 
-  createContactItem = () => {
-    return this.props.contact.map(contact => {
+  const createContactItem = () => {
+    return contact.map(contact => {
       return (
         <ItemElementStyle key={nanoid()}>
           {`${contact.name} : ${contact.number}`}
           <ButtonElementStyle
             data-id={contact.id}
-            onClick={() => this.deleteId(contact.id)}
+            onClick={() => deleteId(contact.id)}
           >
             x
           </ButtonElementStyle>
@@ -27,10 +26,7 @@ class CreateListContact extends Component {
       );
     });
   };
-
-  render() {
-    return <ListElementStyle>{this.createContactItem()}</ListElementStyle>;
-  }
-}
+  return <ListElementStyle>{createContactItem()}</ListElementStyle>;
+};
 
 export default CreateListContact;
