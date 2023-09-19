@@ -60,13 +60,11 @@ const App = () => {
   };
 
   const filterContacts = value => {
-    setContacts(...contacts);
-    setFilter(`${value.toLowerCase()}`);
+    console.log(value);
+    return setFilter(`${value.toLowerCase()}`);
   };
 
   const filterChange = data => {
-    console.log(data);
-    console.log(filter);
     let newArr = data.filter(el => el.name.toLowerCase().includes(filter));
     console.log(newArr);
     return newArr;
