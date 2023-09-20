@@ -22,25 +22,22 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
+    localStorage.setItem('LokalContacts', JSON.stringify(contacts));
   }, [contacts]);
 
   const formSubmitHandler = data => {
-    console.log(data);
-    return repeatControl(data);
+    repeatControl(data);
   };
 
   const repeatControl = newContact => {
-    console.log(newContact);
     let nameArr = [];
     nameArr = contacts.map(el => el.name);
-    console.log(nameArr);
     if (!nameArr.includes(newContact.name)) {
       let newArrContacts = [
         ...contacts,
         { id: newContact.id, name: newContact.name, number: newContact.number },
       ];
-      return setContacts({ ...contacts, newArrContacts });
+      return setContacts(...contacts, newArrContacts);
     } else {
       Notify.info('The contact is already in the phone book!', {
         position: 'center-center',
@@ -49,26 +46,22 @@ const App = () => {
     }
   };
 
-  const elementDelete = (arr, idContact) => {
-    let newArr = arr.filter(elem => elem.id !== idContact);
-    return newArr;
-  };
-
   const deleteContactFromList = idContact => {
-    let newArrAfterDel = elementDelete(contacts, idContact);
-    setContacts({ ...contacts, ...newArrAfterDel });
+    setContacts(prevState =>
+      prevState.filter(contact => contact.id !== idContact)
+    );
   };
 
   const filterContacts = value => {
-    console.log(value);
-    return setFilter(`${value.toLowerCase()}`);
+    return setFilter(value.toLowerCase());
   };
 
-  const filterChange = data => {
-    let newArr = data.filter(el => el.name.toLowerCase().includes(filter));
-    console.log(newArr);
-    return newArr;
+  const filterChange = () => {
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
   };
+  const filteredContacts = filterChange();
 
   return (
     <div
@@ -91,7 +84,7 @@ const App = () => {
       <h2>Contacts</h2>
       <FilterContacts filterContacts={filterContacts} />
       <CreateListContact
-        contact={filterChange(contacts)}
+        contact={filteredContacts}
         deleted={deleteContactFromList}
       />
     </div>
