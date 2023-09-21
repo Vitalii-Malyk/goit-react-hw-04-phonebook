@@ -27,7 +27,8 @@ const FormCreateContact = ({ onSubmit }) => {
   };
 
   const resetForm = () => {
-    return setName(''), setNumber('');
+    setName('');
+    setNumber('');
   };
 
   const сreateСontact = e => {
