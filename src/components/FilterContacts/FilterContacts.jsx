@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import { nanoid } from 'nanoid';
 
 import {
@@ -6,14 +6,7 @@ import {
   InputElementStyle,
 } from 'components/FilterContacts/FilterContacts.styled';
 
-const FilterContacts = ({ filterContacts }) => {
-  const [filter, setFilter] = useState('');
-
-  const handleChange = ({ target: { value } }) => {
-    setFilter({ value });
-    return filterContacts(value);
-  };
-
+const FilterContacts = ({ value, handleChange }) => {
   let nameInputId = nanoid();
 
   return (
@@ -24,7 +17,7 @@ const FilterContacts = ({ filterContacts }) => {
         id={nameInputId}
         type="text"
         name="name"
-        value={filter}
+        value={value}
       />
     </WrapElementStyle>
   );

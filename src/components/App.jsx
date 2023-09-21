@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { nanoid } from 'nanoid';
 
 import CreateListContact from 'components/CreateListContact/CreateListContact';
 import FormCreateContact from 'components/Forms/FormCreateContact';
@@ -8,21 +9,13 @@ import FilterContacts from 'components/FilterContacts/FilterContacts';
 import bgImage from 'helper/image/telefon-bgc.jpg';
 
 const App = () => {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(
+    () => JSON.parse(localStorage.getItem('contacts')) ?? []
+  );
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-    if (parsedContacts) {
-      setContacts(parsedContacts);
-    } else {
-      setFilter('');
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('LokalContacts', JSON.stringify(contacts));
+    localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
   const formSubmitHandler = data => {
@@ -30,14 +23,18 @@ const App = () => {
   };
 
   const repeatControl = newContact => {
-    let nameArr = [];
-    nameArr = contacts.map(el => el.name);
-    if (!nameArr.includes(newContact.name)) {
-      let newArrContacts = [
-        ...contacts,
-        { id: newContact.id, name: newContact.name, number: newContact.number },
-      ];
-      return setContacts(...contacts, newArrContacts);
+    console.log(newContact);
+    let nameArr = {
+      id: nanoid(),
+      name: newContact.name,
+      number: newContact.number,
+    };
+    if (
+      !contacts.find(
+        nameArr => nameArr.name.toLowerCase() === newContact.name.toLowerCase()
+      )
+    ) {
+      setContacts(prevState => [nameArr, ...prevState]);
     } else {
       Notify.info('The contact is already in the phone book!', {
         position: 'center-center',
@@ -52,16 +49,14 @@ const App = () => {
     );
   };
 
-  const filterContacts = value => {
-    return setFilter(value.toLowerCase());
+  const filterContacts = event => {
+    setFilter(event.currentTarget.value);
   };
 
-  const filterChange = () => {
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
-    );
-  };
-  const filteredContacts = filterChange();
+  const normalizedFilter = filter.toLocaleLowerCase();
+  const filtredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(normalizedFilter)
+  );
 
   return (
     <div
@@ -82,11 +77,13 @@ const App = () => {
       <h1>Phonebook</h1>
       <FormCreateContact onSubmit={formSubmitHandler} />
       <h2>Contacts</h2>
-      <FilterContacts filterContacts={filterContacts} />
-      <CreateListContact
-        contact={filteredContacts}
-        deleted={deleteContactFromList}
-      />
+      <FilterContacts value={filter} handleChange={filterContacts} />
+      {contacts && (
+        <CreateListContact
+          contact={filtredContacts}
+          deleted={deleteContactFromList}
+        />
+      )}
     </div>
   );
 };

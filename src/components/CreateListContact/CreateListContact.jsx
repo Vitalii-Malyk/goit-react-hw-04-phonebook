@@ -12,6 +12,7 @@ const CreateListContact = ({ contact, deleted }) => {
   };
 
   const createContactItem = () => {
+    console.log(contact);
     return contact.map(contact => {
       return (
         <ItemElementStyle key={nanoid()}>
