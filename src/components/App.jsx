@@ -23,7 +23,6 @@ const App = () => {
   };
 
   const repeatControl = newContact => {
-    console.log(newContact);
     let nameArr = {
       id: nanoid(),
       name: newContact.name,
